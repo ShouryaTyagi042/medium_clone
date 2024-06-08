@@ -6,6 +6,7 @@
   "dependencies": {
     "@prisma/client": "^5.15.0",
     "@prisma/extension-accelerate": "^1.1.0",
+    "@shourya_042/common-app": "^1.0.2",
     "hono": "^4.4.2",
     "prisma": "^5.15.0"
   },
