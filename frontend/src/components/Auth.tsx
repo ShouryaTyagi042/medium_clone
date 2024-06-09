@@ -1,13 +1,31 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { SignupType } from "@shourya_042/common-app"
+import axios from "axios"
+import { BACKEND_URL } from "../config"
+
 
 export const Auth = ({ type }: { type: "signin" | "signup" }) => {
+    const navigate = useNavigate()
     const [postInputs, setpostInputs] = useState<SignupType>({
         name: "",
         email: "",
         password: "",
     })
+    async function sendRequest() {
+        try {
+            const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type}`, postInputs)
+            console.log(response.data)
+            const jwt = response.data
+            localStorage.setItem("token", jwt)
+            navigate("/blogs")
+        } catch (e) {
+            alert("Error while signing in")
+
+        }
+
+
+    }
     return <div className="flex flex-col justify-center h-screen">
         <div className="flex justify-center">
             <div className="flex flex-col">
@@ -20,11 +38,11 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
                         {type === "signin" ? "Create a new account" : "Already have an account?"} <Link to={type === "signin" ? "/signup" : "/signin"} className="text-blue-500">{type === "signin" ? "Sign up" : "Sign in"}</Link>
                     </div>
                 </div>
-                <LabelledInput label="Name" placeholder="Name" onChange={(e) => setpostInputs({ ...postInputs, name: e.target.value })} />
+                {type === "signin" ? null : <LabelledInput label="Name" placeholder="Name" onChange={(e) => setpostInputs({ ...postInputs, name: e.target.value })} />}
                 <LabelledInput label="Email" placeholder="Email" onChange={(e) => setpostInputs({ ...postInputs, email: e.target.value })} />
                 <LabelledInput label="Password" type={"password"} placeholder="Password" onChange={(e) => setpostInputs({ ...postInputs, password: e.target.value })} />
                 <div className="flex justify-center mt-4">
-                    <button type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 ">{type === "signin" ? "Sign in" : "Sign up"}</button>
+                    <button onClick={sendRequest} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 ">{type === "signin" ? "Sign in" : "Sign up"}</button>
                 </div>
             </div>
         </div>
