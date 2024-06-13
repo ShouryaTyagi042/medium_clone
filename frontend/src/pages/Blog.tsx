@@ -1,8 +1,21 @@
-import { BlogCard } from "../components/BlogCard"
+import { FullBlog } from "../components/FullBlog"
+import { useBlog } from "../hooks"
+import { useParams } from "react-router-dom"
+
 export const Blog = () => {
+    const { id } = useParams()
+    const { loading, blog } = useBlog({ id: id as string })
+
+    if (loading) {
+        return <div>
+            <div>
+                Loading...
+            </div>
+        </div>
+    }
     return (
-        <div>
-            <BlogCard title="Blog Title" content="Blog Content" authorName="Author Name" publishDate="2nd Feb 2024" />
+        <div>{
+            blog === undefined ? <div>Blog not found</div> : <FullBlog blog={blog} />}
         </div>
     )
 }
